@@ -19,7 +19,7 @@ export default function App() {
         {/* Le bouton qui modifie le texte */}
         <TouchableOpacity
             style={styles.button}
-            onPress={() => setMessage("Click")}
+            onPress={() => setMessage("Click :)")}
         >
           <Text style={styles.buttonText}>Tester le bouton</Text>
         </TouchableOpacity>
