@@ -5,7 +5,7 @@ export default function App() {
   return (
       <View style={styles.container}>
         <Text style={styles.title}>Intégral Scan</Text>
-        <Text style={styles.subtitle}>Test de l'interface (Sans Backend)</Text>
+        <Text style={styles.subtitle}>Test de l'interface</Text>
 
         {/* Un bouton simple pour tester l'interactivité */}
         <TouchableOpacity
