@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=POUR_DES_RAISONS_DE_SECURITE_JE_NE_VAIS_PAS_METTRE_DE_TOKEN
