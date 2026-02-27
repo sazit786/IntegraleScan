@@ -1,2 +1,2 @@
 # IntegraleScan
-Application web intelligente de calcul d’intégrales avec architecture frontend/backend, intégration d’IA locale (Ollama), automatisation via n8n.
+[Application web intelligente de calcul d’intégrales avec architecture frontend/backend, intégration d’IA locale (Ollama), automatisation via n8n.](https://bdebqcca.sharepoint.com/:w:/r/sites/H26-420-SF4-REgr.00002-ProjetdintgrationenSciencesinformatiqueetmathmatique-Eq2-n8n-integr/Documents%20partages/20260213232140_Document_V1.docx?d=w0b29eb41880045d38def18d0591db19d&csf=1&web=1&e=YSATh9)
