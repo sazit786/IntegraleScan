@@ -4,7 +4,7 @@ import { useState } from 'react'; // On importe useState
 
 export default function App() {
   // On crée une mémoire pour le texte
-  const [message, setMessage] = useState("En attente d'un clic...");
+  const [message, setMessage] = useState("Pas click :(");
 
   return (
       <View style={styles.container}>
@@ -19,7 +19,7 @@ export default function App() {
         {/* Le bouton qui modifie le texte */}
         <TouchableOpacity
             style={styles.button}
-            onPress={() => setMessage("Test Réussi ! L'appli réagit bien. 🚀")}
+            onPress={() => setMessage("Click")}
         >
           <Text style={styles.buttonText}>Tester le bouton</Text>
         </TouchableOpacity>
