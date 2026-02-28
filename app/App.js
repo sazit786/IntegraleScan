@@ -1,77 +1,164 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { useState } from 'react'; // On importe useState
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { useState } from 'react';
+import * as SelecteurImage from 'expo-image-picker'; // Outil pour choisir des photos
 
+/**
+ * les petits morceaux d'interface qu'on réutilise.
+ */
+
+// 1. Le cadre qui affiche la photo choisie
+const CadrePhoto = ({ lienImage }) => (
+    <View style={styles.zoneImage}>
+      {lienImage ? (
+          <Image source={{ uri: lienImage }} style={styles.photoAffichee} />
+      ) : (
+          <Text style={{ color: '#555' }}>Aucune image sélectionnée</Text>
+      )}
+    </View>
+);
+
+// 2. Un modèle de bouton personnalisé
+const BoutonAction = ({ titre, action, couleur, styleSpecifique }) => (
+    <TouchableOpacity
+        style={[styles.boutonBase, { backgroundColor: couleur }, styleSpecifique]}
+        onPress={action}
+    >
+      <Text style={styles.texteBouton}>{titre}</Text>
+    </TouchableOpacity>
+);
+
+/**
+ *  LE CŒUR DE L'APPLICATION
+ */
 export default function App() {
-  // On crée une mémoire pour le texte
-  const [message, setMessage] = useState("Pas click :(");
+  // --- LA MÉMOIRE ---
+  const [texteInfo, setTexteInfo] = useState("En attente d'une intégrale...");
+  const [photo, setPhoto] = useState(null);
 
+  // --- LES ACTIONS ---
+
+  // Fonction pour ouvrir la galerie du téléphone ou de l'ordi
+  const choisirUnePhoto = async () => {
+    let resultat = await SelecteurImage.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true, // Permet de recadrer l'image sur l'intégrale
+      quality: 1,
+    });
+
+    if (!resultat.canceled) {
+      setPhoto(resultat.assets[0].uri); // On mémorise le chemin de la photo
+      setTexteInfo("Image chargée ! Prête pour l'analyse.");
+    }
+  };
+
+  // --- L'APPARENCE ---
   return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Intégral Scan</Text>
-        <Text style={styles.subtitle}>Test de l'interface Web</Text>
+      <View style={styles.fond}>
+        {/* Titres du haut */}
+        <Text style={styles.titrePrincipal}>Intégral Scan</Text>
+        <Text style={styles.sousTitre}>Analyse par Intelligence Artificielle</Text>
 
-        {/* Le texte qui va changer au clic */}
-        <View style={styles.statusBox}>
-          <Text style={styles.statusText}>{message}</Text>
+        {/* Affichage de la photo (on utilise notre outil créé plus haut) */}
+        <CadrePhoto lienImage={photo} />
+
+        {/* Boîte qui affiche le message d'état */}
+        <View style={styles.boiteStatut}>
+          <Text style={styles.texteStatut}>{texteInfo}</Text>
         </View>
 
-        {/* Le bouton qui modifie le texte */}
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => setMessage("Click :)")}
-        >
-          <Text style={styles.buttonText}>Tester le bouton</Text>
-        </TouchableOpacity>
+        {/* Zone où on range les boutons */}
+        <View style={styles.zoneBoutons}>
+          <BoutonAction
+              titre="Tester la connexion"
+              couleur="#0A84FF" // Bleu
+              action={() => setTexteInfo("Le bouton fonctionne bien ! ✅")}
+              styleSpecifique={{ marginBottom: 15 }}
+          />
+
+          <BoutonAction
+              titre="📁 Charger une photo"
+              couleur="#FF9500" // Orange
+              action={choisirUnePhoto}
+          />
+        </View>
 
         <StatusBar style="light" />
       </View>
   );
 }
 
+/**
+ * LE DESIGN
+ */
 const styles = StyleSheet.create({
-  container: {
+  fond: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#121212', // Gris très foncé (mode sombre)
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
-  title: {
+  titrePrincipal: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 10,
+    marginBottom: 5,
   },
-  subtitle: {
-    fontSize: 16,
+  sousTitre: {
+    fontSize: 14,
     color: '#A0A0A0',
-    marginBottom: 30,
+    marginBottom: 25,
+    letterSpacing: 1,
   },
-  statusBox: {
+  zoneImage: {
+    width: 300,
+    height: 200,
     backgroundColor: '#1E1E1E',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 25,
     borderWidth: 1,
     borderColor: '#333',
-    minWidth: 250,
+    overflow: 'hidden',
+  },
+  photoAffichee: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain', // Ajuste l'image sans la déformer
+  },
+  boiteStatut: {
+    backgroundColor: '#1E1E1E',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 25,
+    minWidth: 280,
+    alignItems: 'center',
+    borderLeftWidth: 4,
+    borderLeftColor: '#4CAF50', // Petite bordure verte décorative
+  },
+  texteStatut: {
+    color: '#4CAF50',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  zoneBoutons: {
+    width: '100%',
     alignItems: 'center',
   },
-  statusText: {
-    color: '#4CAF50', // Un beau vert pour le succès
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  button: {
-    backgroundColor: '#0A84FF',
+  boutonBase: {
     paddingVertical: 14,
     paddingHorizontal: 28,
-    borderRadius: 10,
+    borderRadius: 12,
+    minWidth: 240,
+    alignItems: 'center',
+    // Petit effet de relief
+    elevation: 3,
   },
-  buttonText: {
+  texteBouton: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
 });
