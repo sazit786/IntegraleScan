@@ -18,7 +18,7 @@ const CadrePhoto = ({ lienImage }) => (
     </View>
 );
 
-// 2. Un modèle de bouton personnalisé
+// 2. Un modèle de bouton personnalisée
 const BoutonAction = ({ titre, action, couleur, styleSpecifique }) => (
     <TouchableOpacity
         style={[styles.boutonBase, { backgroundColor: couleur }, styleSpecifique]}
