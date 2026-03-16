@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { useState } from 'react';
 import * as SelecteurImage from 'expo-image-picker'; // Outil pour choisir des photos
 
+// Progress bar
+import ProgressBar from './components/ProgressBar.web';
+
 /**
  * les petits morceaux d'interface qu'on réutilise.
  */
@@ -62,6 +65,9 @@ export default function App() {
         {/* Affichage de la photo (on utilise notre outil créé plus haut) */}
         <CadrePhoto lienImage={photo} />
 
+        {/* Barre de progression energy */}
+        <ProgressBar value={67} preset="energy" />
+
         {/* Boîte qui affiche le message d'état */}
         <View style={styles.boiteStatut}>
           <Text style={styles.texteStatut}>{texteInfo}</Text>
@@ -108,7 +114,7 @@ const styles = StyleSheet.create({
   sousTitre: {
     fontSize: 16,
     color: '#ffffff',
-    marginBottom: 25,
+    marginBottom: 0,
     letterSpacing: 1,
   },
   zoneImage: {

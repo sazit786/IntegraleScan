@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@loadingio/loading-bar": "^0.1.1",
     "all": "^0.0.0",
     "expo": "~55.0.4",
     "expo-document-picker": "~55.0.8",
