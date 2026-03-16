@@ -13,7 +13,7 @@ const CadrePhoto = ({ lienImage }) => (
       {lienImage ? (
           <Image source={{ uri: lienImage }} style={styles.photoAffichee} />
       ) : (
-          <Text style={{ color: '#555' }}>Aucune image sélectionnée</Text>
+          <Text style={{ color: '#ff0000', fontWeight: 'bold' }}>Aucune image sélectionnée</Text>
       )}
     </View>
 );
@@ -33,7 +33,7 @@ const BoutonAction = ({ titre, action, couleur, styleSpecifique }) => (
  */
 export default function App() {
   // --- LA MÉMOIRE ---
-  const [texteInfo, setTexteInfo] = useState("En attente d'une intégrale...");
+  const [texteInfo, setTexteInfo] = useState("En attente d'une intégrale");
   const [photo, setPhoto] = useState(null);
 
   // --- LES ACTIONS ---
@@ -48,7 +48,7 @@ export default function App() {
 
     if (!resultat.canceled) {
       setPhoto(resultat.assets[0].uri); // On mémorise le chemin de la photo
-      setTexteInfo("Image chargée ! Prête pour l'analyse.");
+      setTexteInfo("Image chargée ! Analyse en cours...");
     }
   };
 
@@ -56,8 +56,8 @@ export default function App() {
   return (
       <View style={styles.fond}>
         {/* Titres du haut */}
-        <Text style={styles.titrePrincipal}>Intégral Scan</Text>
-        <Text style={styles.sousTitre}>Analyse par Intelligence Artificielle</Text>
+        <Text style={styles.titrePrincipal}>Analyse d'intégrales complètes</Text>
+        <Text style={styles.sousTitre}>propulsé par l'Intelligence Artificielle</Text>
 
         {/* Affichage de la photo (on utilise notre outil créé plus haut) */}
         <CadrePhoto lienImage={photo} />
@@ -71,14 +71,14 @@ export default function App() {
         <View style={styles.zoneBoutons}>
           <BoutonAction
               titre="Tester la connexion"
-              couleur="#0A84FF" // Bleu
-              action={() => setTexteInfo("Le bouton fonctionne bien ! ✅")}
+              couleur="#0033ff"
+              action={() => setTexteInfo("La connexion est bonne")}
               styleSpecifique={{ marginBottom: 15 }}
           />
 
           <BoutonAction
-              titre="📁 Charger une photo"
-              couleur="#FF9500" // Orange
+              titre="Charger une photo"
+              couleur="#0033ff"
               action={choisirUnePhoto}
           />
         </View>
@@ -94,54 +94,50 @@ export default function App() {
 const styles = StyleSheet.create({
   fond: {
     flex: 1,
-    backgroundColor: '#121212', // Gris très foncé (mode sombre)
+    backgroundColor: '#121212',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
   titrePrincipal: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 5,
   },
   sousTitre: {
-    fontSize: 14,
-    color: '#A0A0A0',
+    fontSize: 16,
+    color: '#ffffff',
     marginBottom: 25,
     letterSpacing: 1,
   },
   zoneImage: {
     width: 300,
     height: 200,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#2e2e2e',
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 25,
-    borderWidth: 1,
-    borderColor: '#333',
     overflow: 'hidden',
   },
   photoAffichee: {
     width: '100%',
     height: '100%',
-    resizeMode: 'contain', // Ajuste l'image sans la déformer
+    resizeMode: 'contain',
   },
   boiteStatut: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#2e2e2e',
     padding: 15,
     borderRadius: 10,
     marginBottom: 25,
     minWidth: 280,
     alignItems: 'center',
-    borderLeftWidth: 4,
-    borderLeftColor: '#4CAF50', // Petite bordure verte décorative
   },
   texteStatut: {
-    color: '#4CAF50',
-    fontSize: 15,
-    fontWeight: '600',
+    color: '#35b43a',
+    fontSize: 16,
+    fontWeight: 'bold'
   },
   zoneBoutons: {
     width: '100%',
@@ -151,9 +147,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
-    minWidth: 240,
+    minWidth: 280,
     alignItems: 'center',
-    // Petit effet de relief
     elevation: 3,
   },
   texteBouton: {

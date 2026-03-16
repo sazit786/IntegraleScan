@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "all": "^0.0.0",
     "expo": "~55.0.4",
     "expo-document-picker": "~55.0.8",
     "expo-image-picker": "~55.0.10",
