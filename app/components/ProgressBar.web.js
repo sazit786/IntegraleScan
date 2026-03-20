@@ -1,48 +1,22 @@
-import { useEffect, useRef } from 'react';
-
-const chargerScript = (url) => new Promise((resolve) => {
-  if (document.querySelector(`script[src="${url}"]`)) return resolve();
-  const script = document.createElement('script');
-  script.src = url;
-  script.onload = resolve;
-  document.head.appendChild(script);
-});
-
-const chargerCSS = (url) => {
-  if (document.querySelector(`link[href="${url}"]`)) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = url;
-  document.head.appendChild(link);
-};
-
-export default function ProgressBar({ value = 0, preset = 'energy' }) {
-  const divRef = useRef(null);
-  const barRef = useRef(null);
-
-  useEffect(() => {
-    chargerCSS('https://cdn.jsdelivr.net/npm/@loadingio/loading-bar@0.1.1/dist/loading-bar.css');
-
-    chargerScript('https://cdn.jsdelivr.net/npm/@loadingio/loading-bar@0.1.1/dist/loading-bar.js').then(() => {
-      if (divRef.current && !barRef.current && window.ldBar) {
-        barRef.current = new window.ldBar(divRef.current, { preset, label: false });
-        barRef.current.set(value);
-      }
-    });
-
-    return () => { barRef.current = null; };
-  }, []);
-
-  useEffect(() => {
-    if (barRef.current) barRef.current.set(value);
-  }, [value]);
-
+export default function ProgressBar({ value = 0 }) {
   return (
-    <div
-      ref={divRef}
-      className="ldBar label-center"
-      data-preset={preset}
-      style={{ minWidth: 320, height: 50, marginBottom: 0 }}
-    />
+    <div style={{
+      width: 300,
+      height: 14,
+      backgroundColor: '#1e1e1e',
+      borderRadius: 7,
+      overflow: 'hidden',
+      marginTop: 5,
+      marginBottom: 10,
+    }}>
+      <div style={{
+        width: `${Math.min(Math.max(value, 0), 100)}%`,
+        height: '100%',
+        backgroundColor: '#00e676',
+        borderRadius: 7,
+        transition: 'width 0.4s ease',
+        boxShadow: '0 0 8px #00e676',
+      }} />
+    </div>
   );
 }

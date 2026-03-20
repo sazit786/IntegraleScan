@@ -60,13 +60,14 @@ export default function App() {
       <View style={styles.fond}>
         {/* Titres du haut */}
         <Text style={styles.titrePrincipal}>Analyse d'intégrales complètes</Text>
-        <Text style={styles.sousTitre}>propulsé par l'Intelligence Artificielle</Text>
+        <Text style={styles.sousTitres}>propulsé par l'Intelligence Artificielle</Text>
 
         {/* Affichage de la photo (on utilise notre outil créé plus haut) */}
         <CadrePhoto lienImage={photo} />
 
         {/* Barre de progression energy */}
-        <ProgressBar value={67} preset="energy" />
+        <Text style={styles.texteProgression}>Progression:</Text>
+        <ProgressBar value={67} preset="energy"/>
 
         {/* Boîte qui affiche le message d'état */}
         <View style={styles.boiteStatut}>
@@ -86,6 +87,13 @@ export default function App() {
               titre="Charger une photo"
               couleur="#0033ff"
               action={choisirUnePhoto}
+              styleSpecifique={{ marginBottom: 15 }}
+          />
+
+          <BoutonAction
+              titre="Voir la démarche"
+              couleur="#0033ff"
+              //to do 
           />
         </View>
 
@@ -109,12 +117,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 5,
+    marginBottom: 10,
   },
-  sousTitre: {
+  sousTitres: {
     fontSize: 16,
     color: '#ffffff',
-    marginBottom: 0,
+    marginBottom: 15,
     letterSpacing: 1,
   },
   zoneImage: {
@@ -124,7 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 25,
+    marginBottom: 5,
     overflow: 'hidden',
   },
   photoAffichee: {
@@ -132,12 +140,20 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'contain',
   },
+  texteProgression: {
+    fontSize: 16,
+    color: '#ffffff',
+    marginBottom: 5,
+    letterSpacing: 1,
+    width: 300,
+    textAlign: 'left',
+  },
   boiteStatut: {
     backgroundColor: '#2e2e2e',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 25,
-    minWidth: 280,
+    marginBottom: 15,
+    minWidth: 300,
     alignItems: 'center',
   },
   texteStatut: {
@@ -153,7 +169,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
-    minWidth: 280,
+    minWidth: 300,
     alignItems: 'center',
     elevation: 3,
   },
