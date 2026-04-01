@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Modal, Platform } from 'react-native';
 import { useState } from 'react';
-import * as SelecteurImage from 'expo-image-picker'; // Outil pour choisir des photos
+import * as SelecteurImage from 'expo-image-picker';
+import * as SelecteurFichier from 'expo-document-picker';
 
 // Progress bar
-import ProgressBar from './components/ProgressBar.web';
+import ProgressBar from './components/ProgressBar';
 
 /**
  * les petits morceaux d'interface qu'on réutilise.
@@ -38,20 +39,62 @@ export default function App() {
   // --- LA MÉMOIRE ---
   const [texteInfo, setTexteInfo] = useState("En attente d'une intégrale");
   const [photo, setPhoto] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   // --- LES ACTIONS ---
 
-  // Fonction pour ouvrir la galerie du téléphone ou de l'ordi
-  const choisirUnePhoto = async () => {
-    let resultat = await SelecteurImage.launchImageLibraryAsync({
+  // Sur web : ouvre directement le sélecteur de fichiers, sans menu
+  const gererBoutonCharger = () => {
+    if (Platform.OS === 'web') {
+      choisirDepuisGalerie();
+    } else {
+      setMenuVisible(true);
+    }
+  };
+
+  // Ouvrir depuis la galerie
+  const choisirDepuisGalerie = async () => {
+    setMenuVisible(false);
+    const resultat = await SelecteurImage.launchImageLibraryAsync({
       mediaTypes: ['images'],
-      allowsEditing: true, // Permet de recadrer l'image sur l'intégrale
+      allowsEditing: true,
       quality: 1,
     });
-
     if (!resultat.canceled) {
-      setPhoto(resultat.assets[0].uri); // On mémorise le chemin de la photo
+      setPhoto(resultat.assets[0].uri);
       setTexteInfo("Image chargée ! Analyse en cours...");
+    }
+  };
+
+  // Prendre une photo avec l'appareil
+  const prendreUnePhoto = async () => {
+    setMenuVisible(false);
+    const permission = await SelecteurImage.requestCameraPermissionsAsync();
+    if (permission.status !== 'granted') {
+      setTexteInfo("Permission caméra refusée.");
+      return;
+    }
+    const resultat = await SelecteurImage.launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1,
+    });
+    if (!resultat.canceled) {
+      setPhoto(resultat.assets[0].uri);
+      setTexteInfo("Photo prise ! Analyse en cours...");
+    }
+  };
+
+  // Choisir un fichier (PDF, image depuis Drive, iCloud, etc.)
+  const choisirUnFichier = async () => {
+    setMenuVisible(false);
+    const resultat = await SelecteurFichier.getDocumentAsync({
+      type: 'image/*',
+      copyToCacheDirectory: true,
+    });
+    if (!resultat.canceled) {
+      setPhoto(resultat.assets[0].uri);
+      setTexteInfo("Fichier chargé ! Analyse en cours...");
     }
   };
 
@@ -84,18 +127,60 @@ export default function App() {
           />
 
           <BoutonAction
-              titre="Charger une photo"
+              titre="Charger une image"
               couleur="#0033ff"
-              action={choisirUnePhoto}
+              action={gererBoutonCharger}
               styleSpecifique={{ marginBottom: 15 }}
           />
 
           <BoutonAction
               titre="Voir la démarche"
               couleur="#0033ff"
-              //to do 
+              //to do
           />
         </View>
+
+        {/* Menu de sélection de la source d'image */}
+        <Modal
+            visible={menuVisible}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setMenuVisible(false)}
+        >
+          <TouchableOpacity
+              style={styles.fondModal}
+              activeOpacity={1}
+              onPress={() => setMenuVisible(false)}
+          >
+            <View style={styles.carteMenu}>
+              <Text style={styles.titreMenu}>Choisir une source</Text>
+
+              <BoutonAction
+                  titre="📷  Appareil photo"
+                  couleur="#0033ff"
+                  action={prendreUnePhoto}
+                  styleSpecifique={{ marginBottom: 12 }}
+              />
+              <BoutonAction
+                  titre="🖼️  Galerie"
+                  couleur="#0033ff"
+                  action={choisirDepuisGalerie}
+                  styleSpecifique={{ marginBottom: 12 }}
+              />
+              <BoutonAction
+                  titre="📁  Fichier"
+                  couleur="#0033ff"
+                  action={choisirUnFichier}
+                  styleSpecifique={{ marginBottom: 12 }}
+              />
+              <BoutonAction
+                  titre="Annuler"
+                  couleur="#444444"
+                  action={() => setMenuVisible(false)}
+              />
+            </View>
+          </TouchableOpacity>
+        </Modal>
 
         <StatusBar style="light" />
       </View>
@@ -165,8 +250,26 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
+  fondModal: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  carteMenu: {
+    backgroundColor: '#1e1e1e',
+    borderRadius: 16,
+    padding: 24,
+    width: 340,
+    alignItems: 'center',
+  },
+  titreMenu: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
   boutonBase: {
-
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
