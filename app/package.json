@@ -9,9 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "expo": "~55.0.4",
-    "expo-document-picker": "~55.0.8",
-    "expo-image-picker": "~55.0.10",
+    "@loadingio/loading-bar": "^0.1.1",
+    "all": "^0.0.0",
+    "expo": "~55.0.5",
+    "expo-document-picker": "~55.0.9",
+    "expo-image-picker": "~55.0.13",
     "expo-status-bar": "~55.0.4",
     "react": "19.2.0",
     "react-dom": "19.2.0",

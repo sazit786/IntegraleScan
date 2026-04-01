@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@loadingio/loading-bar": "^0.1.1",
+    "expo": "^55.0.8"
+  }
+}
