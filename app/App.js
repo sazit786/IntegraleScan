@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   boutonBase: {
+
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
