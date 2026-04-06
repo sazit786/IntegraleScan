@@ -1,182 +1,198 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import { useState } from 'react';
-import * as SelecteurImage from 'expo-image-picker'; // Outil pour choisir des photos
-
-// Progress bar
+import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, Modal, TextInput, ActivityIndicator } from 'react-native';
+import { useState, useEffect } from 'react';
+import * as SelecteurImage from 'expo-image-picker';
 import ProgressBar from './components/ProgressBar.web';
 
-/**
- * les petits morceaux d'interface qu'on réutilise.
- */
-
-// 1. Le cadre qui affiche la photo choisie
-const CadrePhoto = ({ lienImage }) => (
-    <View style={styles.zoneImage}>
-      {lienImage ? (
-          <Image source={{ uri: lienImage }} style={styles.photoAffichee} />
-      ) : (
-          <Text style={{ color: '#ff0000', fontWeight: 'bold' }}>Aucune image sélectionnée</Text>
-      )}
-    </View>
-);
-
-// 2. Un modèle de bouton personnalisée
-const BoutonAction = ({ titre, action, couleur, styleSpecifique }) => (
-    <TouchableOpacity
-        style={[styles.boutonBase, { backgroundColor: couleur }, styleSpecifique]}
-        onPress={action}
-    >
-      <Text style={styles.texteBouton}>{titre}</Text>
-    </TouchableOpacity>
-);
-
-/**
- *  LE CŒUR DE L'APPLICATION
- */
 export default function App() {
-  // --- LA MÉMOIRE ---
-  const [texteInfo, setTexteInfo] = useState("En attente d'une intégrale");
+  const [etape, setEtape] = useState('splash');
+  const [langue, setLangue] = useState('FR');
+  const [chargement, setChargement] = useState(false);
   const [photo, setPhoto] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [prenom, setPrenom] = useState("");
+  const [nom, setNom] = useState("");
 
-  // --- LES ACTIONS ---
-
-  // Fonction pour ouvrir la galerie du téléphone ou de l'ordi
-  const choisirUnePhoto = async () => {
-    let resultat = await SelecteurImage.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true, // Permet de recadrer l'image sur l'intégrale
-      quality: 1,
-    });
-
-    if (!resultat.canceled) {
-      setPhoto(resultat.assets[0].uri); // On mémorise le chemin de la photo
-      setTexteInfo("Image chargée ! Analyse en cours...");
+  const t = {
+    FR: {
+      bienvenue: "BIENVENUE", connecter: "SE CONNECTER", skip: "IGNORER",
+      prenom: "Prénom", nom: "Nom", entrer: "CONFIRMER", retour: "RETOUR",
+      titre: "ANALYSE", sousTitre: "Intelligence Artificielle",
+      veille: "SYSTÈME EN VEILLE", analyse: "ANALYSE OCR EN COURS...",
+      charger: "CHARGER UNE IMAGE", demarche: "VOIR LA DÉMARCHE",
+      params: "PARAMÈTRES", langueLabel: "LANGUE", fermer: "APPLIQUER",
+      placeholder: "SCANNER UNE ÉQUATION"
+    },
+    EN: {
+      bienvenue: "WELCOME", connecter: "LOG IN", skip: "SKIP",
+      prenom: "First Name", nom: "Last Name", entrer: "CONFIRM", retour: "BACK",
+      titre: "ANALYSIS", sousTitre: "Artificial Intelligence",
+      veille: "SYSTEM STANDBY", analyse: "OCR ANALYSIS IN PROGRESS...",
+      charger: "UPLOAD IMAGE", demarche: "VIEW STEP-BY-STEP",
+      params: "SETTINGS", langueLabel: "LANGUAGE", fermer: "APPLY",
+      placeholder: "SCAN EQUATION"
     }
   };
 
-  // --- L'APPARENCE ---
+  const cur = t[langue];
+
+  useEffect(() => {
+    const timer = setTimeout(() => setEtape('auth'), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const executerConnexion = () => {
+    if (!prenom || !nom) return alert("Champs requis");
+    setChargement(true);
+    setTimeout(() => {
+      setChargement(false);
+      setEtape('app');
+    }, 1000);
+  };
+
+  const choisirUnePhoto = async () => {
+    let resultat = await SelecteurImage.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1,
+    });
+    if (!resultat.canceled) setPhoto(resultat.assets[0].uri);
+  };
+
+  if (etape === 'splash') {
+    return (
+        <View style={styles.fondCentral}>
+          <ActivityIndicator size="large" color="#0055FF" />
+          <Text style={styles.logoSplash}>INTEGRAL<Text style={{color:'#0055FF'}}>SCAN</Text></Text>
+        </View>
+    );
+  }
+
+  if (etape === 'auth') {
+    return (
+        <View style={styles.fond}>
+          <View style={styles.langBar}>
+            <TouchableOpacity onPress={() => setLangue('FR')}><Text style={[styles.langTxt, langue==='FR' && {color:'#0055FF'}]}>FR</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => setLangue('EN')}><Text style={[styles.langTxt, langue==='EN' && {color:'#0055FF'}]}>EN</Text></TouchableOpacity>
+          </View>
+          <Text style={styles.brandTitleLarge}>INTEGRAL<Text style={styles.accentText}>SCAN</Text></Text>
+          <View style={{marginTop: 50, gap: 15}}>
+            <TouchableOpacity style={styles.btnPlein} onPress={() => setEtape('login')}><Text style={styles.txtPlein}>{cur.connecter}</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.btnVide} onPress={() => setEtape('app')}><Text style={styles.txtVide}>{cur.skip}</Text></TouchableOpacity>
+          </View>
+        </View>
+    );
+  }
+
+  if (etape === 'login') {
+    return (
+        <View style={styles.fond}>
+          <Text style={styles.brandTitleLarge}>{cur.bienvenue}</Text>
+          <View style={{marginTop: 30}}>
+            <TextInput style={styles.input} placeholder={cur.prenom} placeholderTextColor="#444" onChangeText={setPrenom} />
+            <TextInput style={styles.input} placeholder={cur.nom} placeholderTextColor="#444" onChangeText={setNom} />
+            <TouchableOpacity style={styles.btnPlein} onPress={executerConnexion}>
+              {chargement ? <ActivityIndicator color="#FFF"/> : <Text style={styles.txtPlein}>{cur.entrer}</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setEtape('auth')} style={{marginTop: 20, alignItems:'center'}}><Text style={{color:'#555'}}>{cur.retour}</Text></TouchableOpacity>
+          </View>
+        </View>
+    );
+  }
+
   return (
-      <View style={styles.fond}>
-        {/* Titres du haut */}
-        <Text style={styles.titrePrincipal}>Analyse d'intégrales complètes</Text>
-        <Text style={styles.sousTitres}>propulsé par l'Intelligence Artificielle</Text>
+      <SafeAreaView style={styles.fond}>
+        <Modal visible={menuVisible} animationType="fade" transparent={true}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>{cur.params}</Text>
+              <View style={styles.settingItem}>
+                <Text style={styles.settingLabel}>{cur.langueLabel}</Text>
+                <View style={styles.langSwitch}>
+                  <TouchableOpacity style={[styles.langBtn, langue === 'FR' && styles.langBtnActive]} onPress={() => setLangue('FR')}>
+                    <Text style={styles.langText}>FR</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.langBtn, langue === 'EN' && styles.langBtnActive]} onPress={() => setLangue('EN')}>
+                    <Text style={styles.langText}>EN</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <TouchableOpacity style={styles.btnFermer} onPress={() => setMenuVisible(false)}>
+                <Text style={styles.btnFermerText}>{cur.fermer}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
-        {/* Affichage de la photo (on utilise notre outil créé plus haut) */}
-        <CadrePhoto lienImage={photo} />
-
-        {/* Barre de progression energy */}
-        <Text style={styles.texteProgression}>Progression:</Text>
-        <ProgressBar value={67} preset="energy"/>
-
-        {/* Boîte qui affiche le message d'état */}
-        <View style={styles.boiteStatut}>
-          <Text style={styles.texteStatut}>{texteInfo}</Text>
+        <View style={styles.header}>
+          <View style={{width: 24}} />
+          <Text style={styles.brandTitle}>INTEGRAL<Text style={styles.accentText}>{cur.titre}</Text></Text>
+          <TouchableOpacity onPress={() => setMenuVisible(true)}><Text style={{fontSize:20}}>⚙️</Text></TouchableOpacity>
         </View>
 
-        {/* Zone où on range les boutons */}
-        <View style={styles.zoneBoutons}>
-          <BoutonAction
-              titre="Tester la connexion"
-              couleur="#0033ff"
-              action={() => setTexteInfo("La connexion est bonne")}
-              styleSpecifique={{ marginBottom: 15 }}
-          />
+        {prenom ? <Text style={styles.userGreet}>{cur.bienvenue}, {prenom}</Text> : null}
 
-          <BoutonAction
-              titre="Charger une photo"
-              couleur="#0033ff"
-              action={choisirUnePhoto}
-              styleSpecifique={{ marginBottom: 15 }}
-          />
+        <View style={styles.zoneImage}>
+          {photo ? <Image source={{ uri: photo }} style={{width:'100%', height:'100%', borderRadius:12}} /> : <Text style={{color:'#222', fontSize:10, fontWeight:'bold'}}>{cur.placeholder}</Text>}
+        </View>
 
-          <BoutonAction
-              titre="Voir la démarche"
-              couleur="#0033ff"
-              //to do 
-          />
+        <View style={{width:300, marginBottom:20}}>
+          <ProgressBar value={photo ? 100 : 0} preset="energy"/>
+        </View>
+
+        <View style={styles.boiteStatut}>
+          <View style={[styles.statusIndicator, {backgroundColor: photo ? '#0055FF' : '#00FF66'}]} />
+          <Text style={{color:'#EEE', fontSize:12}}>{photo ? cur.analyse : cur.veille}</Text>
+        </View>
+
+        <View style={{gap: 12}}>
+          <TouchableOpacity style={styles.btnPlein} onPress={choisirUnePhoto}>
+            <Text style={styles.txtPlein}>{cur.charger}</Text>
+          </TouchableOpacity>
+
+          {/* Le bouton démarche ne s'affiche que si une photo est présente */}
+          <TouchableOpacity
+              style={[styles.btnVide, {opacity: photo ? 1 : 0.3}]}
+              disabled={!photo}
+              onPress={() => alert("Analyse en cours...")}
+          >
+            <Text style={styles.txtVide}>{cur.demarche}</Text>
+          </TouchableOpacity>
         </View>
 
         <StatusBar style="light" />
-      </View>
+      </SafeAreaView>
   );
 }
 
-/**
- * LE DESIGN
- */
 const styles = StyleSheet.create({
-  fond: {
-    flex: 1,
-    backgroundColor: '#121212',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  titrePrincipal: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 10,
-  },
-  sousTitres: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 15,
-    letterSpacing: 1,
-  },
-  zoneImage: {
-    width: 300,
-    height: 200,
-    backgroundColor: '#2e2e2e',
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 5,
-    overflow: 'hidden',
-  },
-  photoAffichee: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-  texteProgression: {
-    fontSize: 16,
-    color: '#ffffff',
-    marginBottom: 5,
-    letterSpacing: 1,
-    width: 300,
-    textAlign: 'left',
-  },
-  boiteStatut: {
-    backgroundColor: '#2e2e2e',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    minWidth: 300,
-    alignItems: 'center',
-  },
-  texteStatut: {
-    color: '#35b43a',
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  zoneBoutons: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  boutonBase: {
-
-    paddingVertical: 14,
-    paddingHorizontal: 28,
-    borderRadius: 12,
-    minWidth: 300,
-    alignItems: 'center',
-    elevation: 3,
-  },
-  texteBouton: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  fond: { flex: 1, backgroundColor: '#0A0A0A', alignItems: 'center', justifyContent: 'center', padding: 20 },
+  fondCentral: { flex: 1, backgroundColor: '#0A0A0A', alignItems: 'center', justifyContent: 'center' },
+  logoSplash: { fontSize: 24, fontWeight: '900', color: '#FFF', letterSpacing: 4, marginTop: 20 },
+  brandTitleLarge: { fontSize: 26, fontWeight: '900', color: '#FFFFFF', letterSpacing: 3 },
+  brandTitle: { fontSize: 18, fontWeight: '900', color: '#FFFFFF', letterSpacing: 2 },
+  accentText: { color: '#0055FF' },
+  langBar: { flexDirection: 'row', gap: 20, position: 'absolute', top: 60 },
+  langTxt: { color: '#444', fontWeight: 'bold' },
+  input: { width: 300, height: 55, backgroundColor: '#111', borderRadius: 12, paddingHorizontal: 15, color: '#fff', marginBottom: 15, borderWidth: 1, borderColor: '#222' },
+  btnPlein: { backgroundColor: '#0055FF', width: 300, paddingVertical: 18, borderRadius: 12, alignItems: 'center' },
+  txtPlein: { color: '#FFF', fontWeight: '900', letterSpacing: 1 },
+  btnVide: { width: 300, paddingVertical: 18, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: '#222' },
+  txtVide: { color: '#444', fontWeight: 'bold' },
+  header: { flexDirection: 'row', width: 300, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  userGreet: { color: '#555', fontSize: 10, marginBottom: 15, textTransform: 'uppercase', fontWeight: 'bold' },
+  zoneImage: { width: 300, height: 200, backgroundColor: '#111', borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginBottom: 20, borderWidth: 1, borderColor: '#222' },
+  boiteStatut: { flexDirection: 'row', backgroundColor: '#111', padding: 12, borderRadius: 8, marginBottom: 25, width: 300, alignItems: 'center', borderWidth: 1, borderColor: '#222' },
+  statusIndicator: { width: 6, height: 6, borderRadius: 3, marginRight: 10 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'center', alignItems: 'center' },
+  modalContent: { width: 300, backgroundColor: '#151515', padding: 25, borderRadius: 20, borderWidth: 1, borderColor: '#222' },
+  modalTitle: { color: '#FFF', fontSize: 16, fontWeight: '900', marginBottom: 25, textAlign: 'center' },
+  settingItem: { marginBottom: 20 },
+  settingLabel: { color: '#555', fontSize: 10, fontWeight: 'bold', marginBottom: 10 },
+  langSwitch: { flexDirection: 'row', backgroundColor: '#0A0A0A', borderRadius: 8, padding: 4 },
+  langBtn: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 6 },
+  langBtnActive: { backgroundColor: '#0055FF' },
+  langText: { color: '#FFF', fontWeight: 'bold', fontSize: 12 },
+  btnFermer: { backgroundColor: '#FFF', paddingVertical: 12, borderRadius: 10, marginTop: 10, alignItems: 'center' },
+  btnFermerText: { color: '#000', fontWeight: 'bold', fontSize: 13 }
 });
