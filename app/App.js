@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, Modal, TextInput, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Modal, TextInput, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as SelecteurImage from 'expo-image-picker';
 import ProgressBar from './components/ProgressBar.web';
@@ -68,6 +68,9 @@ export default function App() {
     );
   }
 
+
+  //h
+
   if (etape === 'auth') {
     return (
         <View style={styles.fond}>
@@ -101,7 +104,7 @@ export default function App() {
   }
 
   return (
-      <SafeAreaView style={styles.fond}>
+      <View style={styles.fond}>
         <Modal visible={menuVisible} animationType="fade" transparent={true}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
@@ -161,7 +164,7 @@ export default function App() {
         </View>
 
         <StatusBar style="light" />
-      </SafeAreaView>
+      </View>
   );
 }
 
