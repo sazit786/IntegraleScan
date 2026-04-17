@@ -1,0 +1,33 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+    fondPrincipal: { flex: 1, backgroundColor: '#0A0A0A', alignItems: 'center', justifyContent: 'center', padding: 20 },
+    fondCentral: { flex: 1, backgroundColor: '#0A0A0A', alignItems: 'center', justifyContent: 'center' },
+    logoSplash: { fontSize: 24, fontWeight: '900', color: '#FFF', letterSpacing: 4, marginTop: 20 },
+    titreMarqueLarge: { fontSize: 26, fontWeight: '900', color: '#FFFFFF', letterSpacing: 3 },
+    titreMarque: { fontSize: 18, fontWeight: '900', color: '#FFFFFF', letterSpacing: 2 },
+    texteAccent: { color: '#0055FF' },
+    barreLangue: { flexDirection: 'row', gap: 20, position: 'absolute', top: 60 },
+    texteLangue: { color: '#444', fontWeight: 'bold' },
+    champSaisie: { width: 300, height: 55, backgroundColor: '#111', borderRadius: 12, paddingHorizontal: 15, color: '#fff', marginBottom: 15, borderWidth: 1, borderColor: '#222' },
+    boutonPlein: { backgroundColor: '#0055FF', width: 300, paddingVertical: 18, borderRadius: 12, alignItems: 'center' },
+    texteBoutonPlein: { color: '#FFF', fontWeight: '900', letterSpacing: 1 },
+    boutonVide: { width: 300, paddingVertical: 18, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: '#222' },
+    texteBoutonVide: { color: '#444', fontWeight: 'bold' },
+    enTete: { flexDirection: 'row', width: 300, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+    salutationUser: { color: '#555', fontSize: 10, marginBottom: 15, textTransform: 'uppercase', fontWeight: 'bold' },
+    cadreImage: { width: 300, height: 200, backgroundColor: '#111', borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginBottom: 20, borderWidth: 1, borderColor: '#222' },
+    boiteStatut: { flexDirection: 'row', backgroundColor: '#111', padding: 12, borderRadius: 8, marginBottom: 25, width: 300, alignItems: 'center', borderWidth: 1, borderColor: '#222' },
+    indicateurStatut: { width: 6, height: 6, borderRadius: 3, marginRight: 10 },
+    surcoucheModal: { flex: 1, backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'center', alignItems: 'center' },
+    contenuModal: { width: 300, backgroundColor: '#151515', padding: 25, borderRadius: 20, borderWidth: 1, borderColor: '#222' },
+    titreModal: { color: '#FFF', fontSize: 16, fontWeight: '900', marginBottom: 25, textAlign: 'center' },
+    itemParametre: { marginBottom: 20 },
+    labelParametre: { color: '#555', fontSize: 10, fontWeight: 'bold', marginBottom: 10 },
+    selecteurLangue: { flexDirection: 'row', backgroundColor: '#0A0A0A', borderRadius: 8, padding: 4 },
+    boutonLangueModal: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 6 },
+    boutonLangueActif: { backgroundColor: '#0055FF' },
+    texteLangueModal: { color: '#FFF', fontWeight: 'bold', fontSize: 12 },
+    boutonFermerModal: { backgroundColor: '#FFF', paddingVertical: 12, borderRadius: 10, marginTop: 10, alignItems: 'center' },
+    texteBoutonFermer: { color: '#000', fontWeight: 'bold', fontSize: 13 }
+});
