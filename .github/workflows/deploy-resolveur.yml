@@ -6,6 +6,7 @@ on:
     paths:
       - 'config files/resolveur/**'
       - 'resolveur_integrales.py'
+  workflow_dispatch:
 
 jobs:
   build-and-push:
