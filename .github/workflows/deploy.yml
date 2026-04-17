@@ -1,4 +1,4 @@
-name: Build et Publish Docker Image
+name: 🖥️ Deploy Frontend (Expo Web)
 
 on:
   push:

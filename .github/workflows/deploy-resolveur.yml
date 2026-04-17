@@ -1,4 +1,4 @@
-name: Build et Publish Résolveur Docker Image
+name: 🧮 Deploy Résolveur Python (API)
 
 on:
   push:
