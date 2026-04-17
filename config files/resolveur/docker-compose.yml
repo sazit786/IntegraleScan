@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  resolveur:
+    image: ghcr.io/TylerNi/integral-scan-resolveur:latest
+    container_name: resolveur-integrales
+    restart: unless-stopped
+    ports:
+      - "8100:8100"
