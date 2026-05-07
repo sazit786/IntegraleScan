@@ -7,3 +7,5 @@ services:
     restart: unless-stopped
     ports:
       - "8100:8100"
+    labels:
+      - "com.centurylinklabs.watchtower.scope=integral-scan"
