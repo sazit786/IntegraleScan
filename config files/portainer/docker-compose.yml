@@ -1,16 +1,15 @@
 version: '3.8'
 
 services:
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
     restart: unless-stopped
-    ports:
-      - "8000:8000"
-      - "9443:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-
-volumes:
-  portainer_data:
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCOPE=integral-scan
+      - REPO_USER=sazit786
+      - REPO_PASS=${GHCR_TOKEN}
+    command: --schedule "0 0 4 * * *" --scope integral-scan
