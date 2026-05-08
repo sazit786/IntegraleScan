@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Modal, TextInput, ActivityIndicator, Imag
 import { useState, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import ProgressBar from './components/ProgressBar.web';
+import MathDisplay from './components/MathDisplay';
 
 // --- IMPORTS DE TES NOUVEAUX FICHIERS ---
 import { traductions } from './src/traductions';
@@ -204,7 +205,7 @@ export default function App() {
           <View style={styles.surcoucheModal}>
             <View style={[styles.contenuModal, {maxHeight: '80%'}]}>
               <Text style={styles.titreModal}>{texte.demarche}</Text>
-              {reponse && <Text style={{color:'#0055FF', fontWeight:'bold', marginBottom:10, textAlign:'center'}}>{reponse}</Text>}
+              {reponse && <MathDisplay latex={reponse} />}
               <ScrollView>
                 <Text style={{color:'#CCC', fontSize:11, fontFamily:'monospace'}}>{demarche}</Text>
               </ScrollView>
