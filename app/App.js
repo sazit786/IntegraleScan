@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, TouchableOpacity, Modal, TextInput, ActivityIndicator, Image } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, TextInput, ActivityIndicator, Image, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import ProgressBar from './components/ProgressBar.web';
@@ -16,6 +16,10 @@ export default function App() {
   const [estMenuVisible, setEstMenuVisible] = useState(false);
   const [prenomUtilisateur, setPrenomUtilisateur] = useState("");
   const [nomUtilisateur, setNomUtilisateur] = useState("");
+  const [estEnAnalyse, setEstEnAnalyse] = useState(false);
+  const [reponse, setReponse] = useState(null);
+  const [demarche, setDemarche] = useState(null);
+  const [estDemarcheVisible, setEstDemarcheVisible] = useState(false);
 
   const texte = traductions[langue];
 
@@ -31,6 +35,39 @@ export default function App() {
       setEstEnChargement(false);
       setEcranActuel('app');
     }, 1000);
+  };
+
+  const analyserImage = async () => {
+    if (!imageSelectionnee || estEnAnalyse) return;
+    setEstEnAnalyse(true);
+    setReponse(null);
+    setDemarche(null);
+    try {
+      // Convertir l'image en base64
+      const res = await fetch(imageSelectionnee);
+      const blob = await res.blob();
+      const base64 = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.readAsDataURL(blob);
+      });
+
+      // Envoyer au webhook n8n
+      const webhookRes = await fetch('https://n8n.srvnt.ca/webhook/dca5a6c3-9cec-4215-83e7-334ef0f3c2da', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageBase64: base64 }),
+      });
+
+      const data = await webhookRes.json();
+      setReponse(data.reponse);
+      setDemarche(data.demarche);
+      setEstDemarcheVisible(true);
+    } catch (e) {
+      alert("Erreur lors de l'analyse : " + e.message);
+    } finally {
+      setEstEnAnalyse(false);
+    }
   };
 
   const ouvrirGalerie = async () => {
@@ -127,12 +164,14 @@ export default function App() {
         </View>
 
         <View style={{width:300, marginBottom:20}}>
-          <ProgressBar value={imageSelectionnee ? 100 : 0} preset="energy"/>
+          <ProgressBar value={reponse ? 100 : estEnAnalyse ? 50 : imageSelectionnee ? 10 : 0} preset="energy"/>
         </View>
 
         <View style={styles.boiteStatut}>
-          <View style={[styles.indicateurStatut, {backgroundColor: imageSelectionnee ? '#0055FF' : '#00FF66'}]} />
-          <Text style={{color:'#EEE', fontSize:12}}>{imageSelectionnee ? texte.analyse : texte.veille}</Text>
+          <View style={[styles.indicateurStatut, {backgroundColor: reponse ? '#00FF66' : estEnAnalyse ? '#FF9900' : imageSelectionnee ? '#0055FF' : '#333'}]} />
+          <Text style={{color:'#EEE', fontSize:12}}>
+            {reponse ? texte.termine : estEnAnalyse ? texte.analyse : imageSelectionnee ? texte.pret : texte.veille}
+          </Text>
         </View>
 
         <View style={{gap: 12}}>
@@ -141,13 +180,40 @@ export default function App() {
           </TouchableOpacity>
 
           <TouchableOpacity
-              style={[styles.boutonVide, {opacity: imageSelectionnee ? 1 : 0.3}]}
-              disabled={!imageSelectionnee}
-              onPress={() => alert("Fonctionnalité d'analyse bientôt disponible")}
+              style={[styles.boutonPlein, {opacity: imageSelectionnee && !estEnAnalyse ? 1 : 0.3, backgroundColor: '#003399'}]}
+              disabled={!imageSelectionnee || estEnAnalyse}
+              onPress={analyserImage}
+          >
+            {estEnAnalyse
+              ? <ActivityIndicator color="#FFF"/>
+              : <Text style={styles.texteBoutonPlein}>{texte.analyser}</Text>
+            }
+          </TouchableOpacity>
+
+          <TouchableOpacity
+              style={[styles.boutonVide, {opacity: reponse ? 1 : 0.3}]}
+              disabled={!reponse}
+              onPress={() => setEstDemarcheVisible(true)}
           >
             <Text style={styles.texteBoutonVide}>{texte.demarche}</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Modal démarche */}
+        <Modal visible={estDemarcheVisible} animationType="slide" transparent={true}>
+          <View style={styles.surcoucheModal}>
+            <View style={[styles.contenuModal, {maxHeight: '80%'}]}>
+              <Text style={styles.titreModal}>{texte.demarche}</Text>
+              {reponse && <Text style={{color:'#0055FF', fontWeight:'bold', marginBottom:10, textAlign:'center'}}>{reponse}</Text>}
+              <ScrollView>
+                <Text style={{color:'#CCC', fontSize:11, fontFamily:'monospace'}}>{demarche}</Text>
+              </ScrollView>
+              <TouchableOpacity style={[styles.boutonFermerModal, {marginTop:15}]} onPress={() => setEstDemarcheVisible(false)}>
+                <Text style={styles.texteBoutonFermer}>{texte.fermer}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
         <StatusBar style="light" />
       </View>
