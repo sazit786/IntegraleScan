@@ -4,7 +4,7 @@
     "slug": "IntegralScan",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo-integral-3.PNG",
+    "icon": "./assets/logo-integral-3.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -24,7 +24,7 @@
       "package": "com.anonymous.IntegralScan"
     },
     "web": {
-      "favicon": "./assets/logo-integral-3.PNG"
+      "favicon": "./assets/logo-integral-3.png"
     }
   }
 }
