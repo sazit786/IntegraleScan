@@ -53,7 +53,7 @@ export default function App() {
       });
 
       // Envoyer au webhook n8n
-      const webhookRes = await fetch('https://n8n.srvnt.ca/webhook/dca5a6c3-9cec-4215-83e7-334ef0f3c2da', {
+      const webhookRes = await fetch('http://10.0.0.191:30109/webhook/dca5a6c3-9cec-4215-83e7-334ef0f3c2da', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageBase64: base64 }),
