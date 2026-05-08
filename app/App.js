@@ -24,6 +24,26 @@ export default function App() {
 
   const texte = traductions[langue];
 
+  const cleanDemarche = (text) => {
+    if (!text) return '';
+    return text
+      .replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g, '∫[$1→$2]')
+      .replace(/\\int/g, '∫')
+      .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1)/($2)')
+      .replace(/\\log\b/g, 'log')
+      .replace(/\\ln\b/g, 'ln')
+      .replace(/\\left\(/g, '(').replace(/\\right\)/g, ')')
+      .replace(/\\left\[/g, '[').replace(/\\right\]/g, ']')
+      .replace(/\\left\|/g, '|').replace(/\\right\|/g, '|')
+      .replace(/\\left/g, '').replace(/\\right/g, '')
+      .replace(/\\sqrt\{([^}]+)\}/g, '√($1)')
+      .replace(/\\cdot/g, '·')
+      .replace(/\\,/g, ' ')
+      .replace(/\\\\/g, '\n')
+      .replace(/\$/g, '')
+      .replace(/\{/g, '').replace(/\}/g, '');
+  };
+
   useEffect(() => {
     const timerSplash = setTimeout(() => setEcranActuel('auth'), 2000);
     return () => clearTimeout(timerSplash);
@@ -207,7 +227,7 @@ export default function App() {
               <Text style={styles.titreModal}>{texte.demarche}</Text>
               {reponse && <MathDisplay latex={reponse} />}
               <ScrollView>
-                <Text style={{color:'#CCC', fontSize:11, fontFamily:'monospace'}}>{demarche}</Text>
+                <Text style={{color:'#CCC', fontSize:11, fontFamily:'monospace'}}>{cleanDemarche(demarche)}</Text>
               </ScrollView>
               <TouchableOpacity style={[styles.boutonFermerModal, {marginTop:15}]} onPress={() => setEstDemarcheVisible(false)}>
                 <Text style={styles.texteBoutonFermer}>{texte.fermer}</Text>

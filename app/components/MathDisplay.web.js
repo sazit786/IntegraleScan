@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-// Charge KaTeX depuis CDN dynamiquement
 function loadKaTeX() {
   return new Promise((resolve) => {
     if (window.katex) return resolve();
@@ -15,13 +14,12 @@ function loadKaTeX() {
   });
 }
 
-export default function MathDisplay({ latex, color = '#0055FF', fontSize = 20 }) {
+export default function MathDisplay({ latex, color = '#0055FF' }) {
   const ref = useRef(null);
 
   useEffect(() => {
     if (!latex || !ref.current) return;
-    // Enlève les délimiteurs $ si présents
-    const clean = latex.replace(/^\$\$?|\$\$?$/g, '').trim();
+    const clean = latex.replace(/^\$+|\$+$/g, '').trim();
     loadKaTeX().then(() => {
       if (ref.current && window.katex) {
         try {
@@ -37,9 +35,16 @@ export default function MathDisplay({ latex, color = '#0055FF', fontSize = 20 })
   }, [latex]);
 
   return (
-    <div
-      ref={ref}
-      style={{ color, fontSize, textAlign: 'center', marginBottom: 10, minHeight: 40 }}
-    />
+    <div style={{
+      width: '100%',
+      textAlign: 'center',
+      color,
+      paddingTop: 8,
+      paddingBottom: 16,
+      boxSizing: 'border-box',
+      lineHeight: 'normal',
+    }}>
+      <div ref={ref} />
+    </div>
   );
 }
