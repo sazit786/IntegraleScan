@@ -5,7 +5,7 @@ export const traductions = {
         titre: "ANALYSE", veille: "SYSTÈME EN VEILLE", analyse: "ANALYSE OCR EN COURS...",
         charger: "CHARGER UNE IMAGE", demarche: "VOIR LA DÉMARCHE",
         analyser: "ANALYSER", pret: "IMAGE PRÊTE", termine: "ANALYSE TERMINÉE",
-        params: "PARAMÈTRES", langueLabel: "LANGUE", fermer: "APPLIQUER",
+        params: "PARAMÈTRES", langueLabel: "LANGUE", fermer: "APPLIQUER", terminer: "TERMINER",
         placeholder: "SCANNER UNE ÉQUATION"
     },
     EN: {
@@ -14,7 +14,7 @@ export const traductions = {
         titre: "ANALYSIS", veille: "SYSTEM STANDBY", analyse: "OCR ANALYSIS IN PROGRESS...",
         charger: "UPLOAD IMAGE", demarche: "VIEW STEP-BY-STEP",
         analyser: "ANALYZE", pret: "IMAGE READY", termine: "ANALYSIS COMPLETE",
-        params: "SETTINGS", langueLabel: "LANGUAGE", fermer: "APPLY",
+        params: "SETTINGS", langueLabel: "LANGUAGE", fermer: "APPLY", terminer: "DONE",
         placeholder: "SCAN EQUATION"
     }
 };

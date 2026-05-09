@@ -26,16 +26,16 @@ export default function App() {
 
   const cleanDemarche = (text) => {
     if (!text) return '';
-    // Gère les \frac avec accolades imbriquées (ex: \frac{2x}{x^{2} + 1})
-    const expandFrac = (t) => {
-      return t.replace(/\\frac\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g,
-        (_, num, den) => `(${num})/(${den})`);
-    };
+    const expandFrac = (t) => t.replace(
+      /\\frac\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g,
+      (_, num, den) => `(${num})/(${den})`
+    );
     let result = text;
-    // Appliquer plusieurs fois pour les fracs imbriquées
     for (let i = 0; i < 3; i++) result = expandFrac(result);
     return result
-      .replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g, '∫[$1→$2]')
+      .replace(/═{2,}/g, '─────────────────────')   // séparateurs lourds → légers
+      .replace(/─{4,}/g, '─────────────────────')
+      .replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g, '∫[$1 → $2]')
       .replace(/\\int/g, '∫')
       .replace(/\\log\b/g, 'log')
       .replace(/\\ln\b/g, 'ln')
@@ -48,7 +48,8 @@ export default function App() {
       .replace(/\\,/g, ' ')
       .replace(/\\\\/g, '\n')
       .replace(/\$/g, '')
-      .replace(/\{/g, '').replace(/\}/g, '');
+      .replace(/\{/g, '').replace(/\}/g, '')
+      .replace(/\n{3,}/g, '\n\n');  // max 2 lignes vides consécutives
   };
 
   useEffect(() => {
@@ -152,7 +153,7 @@ export default function App() {
   }
 
   return (
-      <View style={styles.fondPrincipal}>
+      <View style={[styles.fondPrincipal, {justifyContent: 'flex-start', paddingTop: 60, paddingBottom: 30}]}>
         <Modal visible={estMenuVisible} animationType="fade" transparent={true}>
           <View style={styles.surcoucheModal}>
             <View style={styles.contenuModal}>
@@ -191,7 +192,7 @@ export default function App() {
           )}
         </View>
 
-        <View style={{width:300, marginBottom:20}}>
+        <View style={{width:'100%', maxWidth:360, marginBottom:20}}>
           <ProgressBar value={reponse ? 100 : estEnAnalyse ? 50 : imageSelectionnee ? 10 : 0} preset="energy"/>
         </View>
 
@@ -233,11 +234,11 @@ export default function App() {
             <View style={[styles.contenuModal, {maxHeight: '80%'}]}>
               <Text style={styles.titreModal}>{texte.demarche}</Text>
               {reponse && <MathDisplay latex={reponse} />}
-              <ScrollView>
-                <Text style={{color:'#CCC', fontSize:12, fontFamily:'monospace', lineHeight:20}}>{cleanDemarche(demarche)}</Text>
+              <ScrollView style={{flex:1}} contentContainerStyle={{paddingBottom:8}}>
+                <Text style={{color:'#CCC', fontSize:13, lineHeight:22}}>{cleanDemarche(demarche)}</Text>
               </ScrollView>
               <TouchableOpacity style={[styles.boutonFermerModal, {marginTop:15}]} onPress={() => setEstDemarcheVisible(false)}>
-                <Text style={styles.texteBoutonFermer}>{texte.fermer}</Text>
+                <Text style={styles.texteBoutonFermer}>{texte.terminer}</Text>
               </TouchableOpacity>
             </View>
           </View>
