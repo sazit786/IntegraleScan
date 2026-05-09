@@ -26,10 +26,17 @@ export default function App() {
 
   const cleanDemarche = (text) => {
     if (!text) return '';
-    return text
+    // Gère les \frac avec accolades imbriquées (ex: \frac{2x}{x^{2} + 1})
+    const expandFrac = (t) => {
+      return t.replace(/\\frac\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g,
+        (_, num, den) => `(${num})/(${den})`);
+    };
+    let result = text;
+    // Appliquer plusieurs fois pour les fracs imbriquées
+    for (let i = 0; i < 3; i++) result = expandFrac(result);
+    return result
       .replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g, '∫[$1→$2]')
       .replace(/\\int/g, '∫')
-      .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1)/($2)')
       .replace(/\\log\b/g, 'log')
       .replace(/\\ln\b/g, 'ln')
       .replace(/\\left\(/g, '(').replace(/\\right\)/g, ')')
@@ -227,7 +234,7 @@ export default function App() {
               <Text style={styles.titreModal}>{texte.demarche}</Text>
               {reponse && <MathDisplay latex={reponse} />}
               <ScrollView>
-                <Text style={{color:'#CCC', fontSize:11, fontFamily:'monospace'}}>{cleanDemarche(demarche)}</Text>
+                <Text style={{color:'#CCC', fontSize:12, fontFamily:'monospace', lineHeight:20}}>{cleanDemarche(demarche)}</Text>
               </ScrollView>
               <TouchableOpacity style={[styles.boutonFermerModal, {marginTop:15}]} onPress={() => setEstDemarcheVisible(false)}>
                 <Text style={styles.texteBoutonFermer}>{texte.fermer}</Text>
