@@ -146,7 +146,7 @@ export default function App() {
             <TouchableOpacity onPress={() => setLangue('EN')}><Text style={[styles.texteLangue, langue==='EN' && {color:'#0055FF'}]}>EN</Text></TouchableOpacity>
           </View>
           <Text style={styles.titreMarqueLarge}>INTEGRAL<Text style={styles.texteAccent}>SCAN</Text></Text>
-          <View style={{marginTop: 50, gap: 15}}>
+          <View style={{marginTop: 50, gap: 15, width: '100%', maxWidth: 360}}>
             <TouchableOpacity style={styles.boutonPlein} onPress={() => setEcranActuel('login')}><Text style={styles.texteBoutonPlein}>{texte.connecter}</Text></TouchableOpacity>
             <TouchableOpacity style={styles.boutonVide} onPress={() => setEcranActuel('app')}><Text style={styles.texteBoutonVide}>{texte.skip}</Text></TouchableOpacity>
           </View>
@@ -158,7 +158,7 @@ export default function App() {
     return (
         <View style={styles.fondPrincipal}>
           <Text style={styles.titreMarqueLarge}>{texte.bienvenue}</Text>
-          <View style={{marginTop: 30}}>
+          <View style={{marginTop: 30, width: '100%', maxWidth: 360}}>
             <TextInput style={styles.champSaisie} placeholder={texte.prenom} placeholderTextColor="#444" onChangeText={setPrenomUtilisateur} />
             <TextInput style={styles.champSaisie} placeholder={texte.nom} placeholderTextColor="#444" onChangeText={setNomUtilisateur} />
             <TouchableOpacity style={styles.boutonPlein} onPress={gererConnexion}>
@@ -221,7 +221,7 @@ export default function App() {
           </Text>
         </View>
 
-        <View style={{gap: 12}}>
+        <View style={{gap: 12, width: '100%', maxWidth: 360}}>
           <TouchableOpacity style={styles.boutonPlein} onPress={ouvrirGalerie}>
             <Text style={styles.texteBoutonPlein}>{texte.charger}</Text>
           </TouchableOpacity>
