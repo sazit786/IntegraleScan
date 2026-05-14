@@ -21,6 +21,7 @@ export default function App() {
   const [reponse, setReponse] = useState(null);
   const [demarche, setDemarche] = useState(null);
   const [estDemarcheVisible, setEstDemarcheVisible] = useState(false);
+  const [tempsEcoule, setTempsEcoule] = useState(0);
 
   const texte = traductions[langue];
 
@@ -71,6 +72,15 @@ export default function App() {
     setEstEnAnalyse(true);
     setReponse(null);
     setDemarche(null);
+    setTempsEcoule(0);
+
+    // Compteur de secondes
+    const intervalle = setInterval(() => setTempsEcoule(t => t + 1), 1000);
+
+    // Timeout de 5 minutes
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 300000);
+
     try {
       // Convertir l'image en base64
       const res = await fetch(imageSelectionnee);
@@ -86,6 +96,7 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageBase64: base64 }),
+        signal: controller.signal,
       });
 
       const data = await webhookRes.json();
@@ -93,9 +104,16 @@ export default function App() {
       setDemarche(data.demarche);
       setEstDemarcheVisible(true);
     } catch (e) {
-      alert("Erreur lors de l'analyse : " + e.message);
+      if (e.name === 'AbortError') {
+        alert("L'analyse a pris trop longtemps (>5 min). Réessaie.");
+      } else {
+        alert("Erreur lors de l'analyse : " + e.message);
+      }
     } finally {
+      clearInterval(intervalle);
+      clearTimeout(timeoutId);
       setEstEnAnalyse(false);
+      setTempsEcoule(0);
     }
   };
 
@@ -199,7 +217,7 @@ export default function App() {
         <View style={styles.boiteStatut}>
           <View style={[styles.indicateurStatut, {backgroundColor: reponse ? '#00FF66' : estEnAnalyse ? '#FF9900' : imageSelectionnee ? '#0055FF' : '#333'}]} />
           <Text style={{color:'#EEE', fontSize:12}}>
-            {reponse ? texte.termine : estEnAnalyse ? texte.analyse : imageSelectionnee ? texte.pret : texte.veille}
+            {reponse ? texte.termine : estEnAnalyse ? `${texte.analyse} (${tempsEcoule}s)` : imageSelectionnee ? texte.pret : texte.veille}
           </Text>
         </View>
 
