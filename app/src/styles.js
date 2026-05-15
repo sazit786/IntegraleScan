@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     champSaisie: { width: '100%', maxWidth: 360, height: 55, backgroundColor: '#111', borderRadius: 12, paddingHorizontal: 15, color: '#fff', marginBottom: 15, borderWidth: 1, borderColor: '#222' },
     boutonPlein: { backgroundColor: '#0055FF', width: '100%', maxWidth: 360, paddingVertical: 18, borderRadius: 12, alignItems: 'center' },
     texteBoutonPlein: { color: '#FFF', fontWeight: '900', letterSpacing: 1 },
-    boutonVide: { width: '100%', maxWidth: 360, paddingVertical: 18, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: '#222' },
+    boutonVide: { backgroundColor: 'transparent', width: '100%', maxWidth: 360, paddingVertical: 18, borderRadius: 12, alignItems: 'center', borderWidth: 1, borderColor: '#222' },
     texteBoutonVide: { color: '#444', fontWeight: 'bold' },
     enTete: { flexDirection: 'row', width: '100%', maxWidth: 360, justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
     salutationUser: { color: '#555', fontSize: 10, marginBottom: 15, textTransform: 'uppercase', fontWeight: 'bold' },
