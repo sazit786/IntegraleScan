@@ -31,7 +31,7 @@ export default function ProgressBar({ value = 0, preset = 'default' }) {
     <>
       {isEnergy && <style>{ENERGY_STYLES}</style>}
       <div style={{
-        width: 300,
+        width: '100%',
         height: 14,
         backgroundColor: '#1e1e1e',
         borderRadius: 7,
