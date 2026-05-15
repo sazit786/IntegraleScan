@@ -82,13 +82,22 @@ export default function App() {
     const timeoutId = setTimeout(() => controller.abort(), 300000);
 
     try {
-      // Convertir l'image en base64
+      // Convertir et resize l'image en base64 (max 1024px)
       const res = await fetch(imageSelectionnee);
       const blob = await res.blob();
       const base64 = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result.split(',')[1]);
-        reader.readAsDataURL(blob);
+        const img = new window.Image();
+        img.onload = () => {
+          const maxWidth = 1024;
+          const scale = Math.min(1, maxWidth / img.width);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.floor(img.width * scale);
+          canvas.height = Math.floor(img.height * scale);
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.9).split(',')[1]);
+        };
+        img.src = URL.createObjectURL(blob);
       });
 
       // Envoyer au webhook n8n
