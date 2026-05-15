@@ -253,7 +253,7 @@ export default function App() {
               <Text style={styles.titreModal}>{texte.demarche}</Text>
               {reponse && <MathDisplay latex={reponse} />}
               <ScrollView style={{flex:1}} contentContainerStyle={{paddingBottom:8}}>
-                <Text style={{color:'#CCC', fontSize:13, lineHeight:22}}>{cleanDemarche(demarche)}</Text>
+                <Text style={{color:'#CCC', fontSize:13, lineHeight:22, textAlign:'center'}}>{cleanDemarche(demarche)}</Text>
               </ScrollView>
               <TouchableOpacity style={[styles.boutonFermerModal, {marginTop:15}]} onPress={() => setEstDemarcheVisible(false)}>
                 <Text style={styles.texteBoutonFermer}>{texte.terminer}</Text>
